@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;700&family=Kalam:wght@700&display=swap');
+        
+        :root {
+            --gold: #FFD700;
+            --marigold: #FFA500;
+            --red: #CD5C5C;
+            --green: #006400;
+            --white: #FFF0F5;
+            --light-pink: #FFB6C1;
+            --pastel-pink: #FADADD;
+            --rose-gold: #E8B5B5;
+            --lavender: #E6E6FA;
+            --baby-pink: #FFC1CC;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #8B4513 0%, #CD5C5C 100%);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .border-decor {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="5" fill="%23FFD700" opacity="0.5"/></svg>');
+            background-size: 40px 40px;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--gold);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: sparkle 1.8s ease-in-out infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .butterfly {
+            position: absolute;
+            width: 20px;
+            height: 15px;
+            background: linear-gradient(45deg, var(--baby-pink), var(--gold));
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: flutter 5s ease-in-out infinite;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--baby-pink);
+            transform: rotate(-45deg);
+            animation: pulseHeart 1.5s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 15px;
+            height: 15px;
+            background: var(--baby-pink);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart::before {
+            top: -7.5px;
+            left: 0;
+        }
+
+        .heart::after {
+            left: 7.5px;
+            top: 0;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 20px;
+            padding-bottom: 60px;
+            z-index: 1;
+        }
+
+        .hero.hidden {
+            display: none;
+        }
+
+        .from-rinshu {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            font-family: 'Kalam', cursive;
+            font-size: 1rem;
+            color: var(--gold);
+            opacity: 0.5;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        h1 {
+            font-family: 'Kalam', cursive;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .name {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            background: linear-gradient(45deg, var(--gold), var(--marigold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 1rem 0;
+            font-family: 'Kalam', cursive;
+        }
+
+        .shayari-box {
+            background: rgba(0,0,0,0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 2px solid var(--gold);
+            max-width: 90%;
+            backdrop-filter: blur(5px);
+        }
+
+        .shayari {
+            font-family: 'Kalam', cursive;
+            font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+            color: var(--baby-pink);
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .cake-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            animation: cakeAppear 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            z-index: 2;
+        }
+
+        .cake {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .cake-layer {
+            position: absolute;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .bottom-layer {
+            width: 280px;
+            height: 120px;
+            bottom: 0;
+            left: 20px;
+            background: var(--baby-pink);
+            border: 4px solid var(--rose-gold);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><path d="M15,10 C17,8 19,10 19,12 C19,14 17,16 15,16 C13,16 11,14 11,12 C11,10 13,8 15,10 Z" fill="none" stroke="%23FFD700" stroke-width="1"/></svg>');
+            background-size: 30px 30px;
+        }
+
+        .top-layer {
+            width: 220px;
+            height: 90px;
+            bottom: 100px;
+            left: 50px;
+            background: var(--rose-gold);
+            border: 4px solid var(--baby-pink);
+            background-image: repeating-linear-gradient(
+                45deg,
+                var(--lavender),
+                var(--lavender) 10px,
+                var(--baby-pink) 10px,
+                var(--baby-pink) 20px
+            );
+        }
+
+        .candles {
+            position: absolute;
+            top: -40px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .candle {
+            width: 15px;
+            height: 70px;
+            background: linear-gradient(45deg, var(--gold), var(--marigold));
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 2px solid #8B4513;
+        }
+
+        .candle:hover {
+            transform: scale(1.1);
+        }
+
+        .flame {
+            width: 12px;
+            height: 25px;
+            background: linear-gradient(#FF4500, #FFD700);
+            border-radius: 50% 50% 40% 40%;
+            position: absolute;
+            top: -30px;
+            left: 1.5px;
+            animation: flicker 0.15s infinite alternate;
+            box-shadow: 0 0 20px rgba(255,69,0,0.5);
+        }
+
+        .candle.blown .flame {
+            animation: blow-out 0.5s forwards;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(45deg, var(--red), var(--marigold));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-family: 'Kalam', cursive;
+        }
+
+        .reveal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .birthday-card {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            padding: 3rem;
+            max-width: 700px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid var(--gold);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            display: none;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .card-visible {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-family: 'Kalam', cursive;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            color: var(--baby-pink);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255,215,0,0.1);
+            border-radius: 10px;
+            border: 1px solid var(--gold);
+            color: var(--baby-pink);
+        }
+
+        .signature {
+            font-style: italic;
+            text-align: right;
+            color: var(--gold);
+            margin-top: 2rem;
+            font-size: 1.3rem;
+            font-family: 'Kalam', cursive;
+        }
+
+        .toggle-btn {
+            background: linear-gradient(45deg, var(--baby-pink), var(--rose-gold));
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            font-family: 'Kalam', cursive;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Kalam', cursive;
+            font-size: 0.9rem;
+            color: var(--gold);
+            opacity: 0.5;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+
+        @keyframes cakeAppear {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); }
+            100% { transform: scale(1.1) rotate(2deg); }
+        }
+
+        @keyframes blow-out {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
+        }
+
+        @keyframes flutter {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(20px, -20px) rotate(10deg); opacity: 1; }
+            100% { transform: translate(40px, 0) rotate(0deg); opacity: 0.7; }
+        }
+
+        @keyframes pulseHeart {
+            0% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.2); }
+            100% { transform: rotate(-45deg) scale(1); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+            50% { box-shadow: 0 0 20px rgba(255,215,0,0.5); }
+            100% { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        }
+
+        @media (max-width: 600px) {
+            .cake {
+                transform: scale(0.8);
+            }
+            
+            .birthday-card {
+                padding: 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .from-rinshu {
+                font-size: 0.8rem;
+                bottom: 70px;
+                right: 10px;
+            }
+
+            .footer {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="border-decor"></div>
+    
+    <div class="hero" id="heroSection">
+        <h1>हैप्पी 29वाँ जन्मदिन</h1>
+        <div class="name">मेरी प्यारी बहन</div>
+        
+        <div class="shayari-box">
+            <div class="shayari">
+                "तुम्हारी हंसी गुलाब सी खिले,<br>
+                हर पल खुशियों से सजे,<br>
+                29वाँ साल लाए अनमोल खजाना,<br>
+                मेरी बहन, तुम हो सबसे प्यारा नजारा!"
+            </div>
+        </div>
+
+        <button class="reveal-btn" id="cutCakeBtn">Cake Cut Karo! 🪔</button>
+        <div class="from-rinshu">
+            <div class="heart"></div>
+            From Rinshu
+        </div>
+    </div>
+
+    <div class="cake-container" id="cakeContainer">
+        <div class="cake">
+            <div class="cake-layer bottom-layer"></div>
+            <div class="cake-layer top-layer"></div>
+            <div class="candles">
+                <div class="candle" data-index="1">
+                    <div class="flame"></div>
+                </div>
+                <div class="candle" data-index="2">
+                    <div class="flame"></div>
+                </div>
+                <div class="candle" data-index="3">
+                    <div class="flame"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="birthday-card" id="englishCard">
+        <div class="card-title">Happy 29th Birthday!</div>
+        <div class="message">
+            My dearest sister, your smile lights up our world like a thousand stars. May your 29th year be filled with love, laughter, and all your heart's desires. You are the most precious gift, and I'm so grateful to have you as my sister!
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <strong>Years</strong><br>29
+            </div>
+            <div class="stat">
+                <strong>Specialty</strong><br>Most Adorable
+            </div>
+            <div class="stat">
+                <strong>Love</strong><br>Infinite
+            </div>
+        </div>
+        <div class="signature">From Rinshu</div>
+        <button class="toggle-btn" id="toggleToHindi">View Hindi Card</button>
+    </div>
+
+    <div class="birthday-card" id="hindiCard">
+        <div class="card-title">जन्मदिन की हार्दिक शुभकामनाएँ!</div>
+        <div class="message">
+            मेरी प्यारी बहन, तुम्हारी मुस्कान हमारी जिंदगी को रौशन करती है। तुम्हारा 29वाँ साल प्यार, खुशी और सपनों से भरा हो। तुम हमारी सबसे अनमोल बहन हो, और हमेशा रहोगी!
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <strong>साल</strong><br>29
+            </div>
+            <div class="stat">
+                <strong>खासियत</strong><br>सबसे प्यारी
+            </div>
+            <div class="stat">
+                <strong>प्यार</strong><br>अनंत
+            </div>
+        </div>
+        <div class="signature">From Rinshu</div>
+        <button class="toggle-btn" id="toggleToEnglish">View English Card</button>
+    </div>
+
+    <div class="footer">Designed by Pratik</div>
+
+    <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1001;"></canvas>
+
+    <audio id="backgroundMusic" loop>
+        <source src="https://cdn.pixabay.com/audio/2023/03/13/10-44-42-482_200x200.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="blowSound">
+        <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_6f4667529f.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="cheerSound">
+        <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_5b7a2b3b9c.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const revealButton = document.getElementById('cutCakeBtn');
+        const cakeContainer = document.getElementById('cakeContainer');
+        const englishCard = document.getElementById('englishCard');
+        const hindiCard = document.getElementById('hindiCard');
+        const heroSection = document.getElementById('heroSection');
+        const candles = document.querySelectorAll('.candle');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const blowSound = document.getElementById('blowSound');
+        const cheerSound = document.getElementById('cheerSound');
+        const canvas = document.getElementById('confettiCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        backgroundMusic.volume = 0.3;
+        backgroundMusic.play().catch(e => console.log('Music play prevented:', e));
+
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+            sparkle.style.top = Math.random() * window.innerHeight + 'px';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1800);
+        }
+        setInterval(createSparkle, 600);
+
+        function createButterfly() {
+            const butterfly = document.createElement('div');
+            butterfly.className = 'butterfly';
+            butterfly.style.left = Math.random() * (window.innerWidth - 20) + 'px';
+            butterfly.style.top = Math.random() * (window.innerHeight - 15) + 'px';
+            document.body.appendChild(butterfly);
+            setTimeout(() => butterfly.remove(), 5000);
+        }
+        setInterval(createButterfly, 3000);
+
+        const confetti = [];
+        class Confetti {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -canvas.height;
+                this.speed = Math.random() * 4 + 2;
+                this.angle = Math.random() * 360;
+                this.color = `hsl(${Math.random() * 360}, 70%, 70%)`;
+                this.size = Math.random() * 8 + 4;
+            }
+
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.angle) * 1.5;
+                this.angle += 0.08;
+                if (this.y > canvas.height) {
+                    this.y = -this.size;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.ellipse(this.x, this.y, this.size / 2, this.size / 4, this.angle, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 80; i++) {
+                confetti.push(new Confetti());
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confetti.forEach(c => {
+                c.update();
+                c.draw();
+            });
+            requestAnimationFrame(animateConfetti);
+        }
+
+        let blownCandles = 0;
+        revealButton.addEventListener('click', () => {
+            cakeContainer.style.display = 'block';
+            heroSection.classList.add('hidden');
+        });
+
+        candles.forEach(candle => {
+            candle.addEventListener('click', () => {
+                if (!candle.classList.contains('blown')) {
+                    candle.classList.add('blown');
+                    blowSound.play();
+                    blownCandles++;
+                    
+                    if (blownCandles === candles.length) {
+                        setTimeout(() => {
+                            createConfetti();
+                            animateConfetti();
+                            cheerSound.play();
+                            cakeContainer.style.animation = 'cakeAppear 1s reverse forwards';
+                            setTimeout(() => {
+                                cakeContainer.style.display = 'none';
+                                englishCard.classList.add('card-visible');
+                            }, 1000);
+                        }, 500);
+                    }
+                }
+            });
+        });
+
+        document.getElementById('toggleToHindi').addEventListener('click', () => {
+            englishCard.classList.remove('card-visible');
+            hindiCard.classList.add('card-visible');
+        });
+
+        document.getElementById('toggleToEnglish').addEventListener('click', () => {
+            hindiCard.classList.remove('card-visible');
+            englishCard.classList.add('card-visible');
+        });
+    </script>
+</body>
+</html>
